@@ -21,4 +21,8 @@ This will keep people from building your images all the time.
 
 In your main directory edit the file photos.json and set the variable 'locked' to 'false'
 
+Adding a Zip of All Files
+------------
+Include a file named Archive.zip to your main directory and a 'Download all Files' button will appear in the header.
+
 
