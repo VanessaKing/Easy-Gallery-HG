@@ -6,6 +6,11 @@ Simple gallery script using an index.php file and a 'photos' folder of images.
 Example:
 http://halgatewood.com/free/gallery/gatewood/
 
+Requirements:
+* PHP 5.2+ (json functions)
+* GD Library
+* File and Folder write permissions
+
 Installation
 ------------
 * Create a folder where you want the gallery to be: /gatewood/
