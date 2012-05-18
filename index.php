@@ -119,7 +119,7 @@ if(isset($_GET['download']) && $_GET['download'] != "") { downloadImage(); }
 function getFileExt($filename) 
 {
 	$filename = strtolower($filename) ;
-	$exts = preg_split("[/\\.]", $filename) ;
+	$exts = split("[/\\.]", $filename) ;
 	$n = count($exts)-1;
 	$exts = $exts[$n];
 	return $exts; 
