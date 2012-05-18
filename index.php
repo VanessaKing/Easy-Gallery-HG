@@ -5,8 +5,8 @@ $title = "Easy Gallery HG";
 $data = (array) json_decode( @file_get_contents("photos.json"));
 
 // BUILD IMAGES
-if($_GET['action'] == "build") { buildImages(); }
-if($_GET['download'] != "") { downloadImage(); }
+if(isset($_GET['action']) && $_GET['action'] == "build") { buildImages(); }
+if(isset($_GET['download']) && $_GET['download'] != "") { downloadImage(); }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -69,12 +69,12 @@ if($_GET['download'] != "") { downloadImage(); }
 			<h1><a href="?all"><?php echo $title ?></a></h1>
 		</div>
 		
-		<?php /*   MESSGAE  */ if($_GET['msg']) { echo "<div class=\"message\">" . stripslashes($_GET['msg']) . "</div>"; } ?>
+		<?php /*   MESSGAE  */ if(isset($_GET['msg']) && trim($_GET['msg']) != "") { echo "<div class=\"message\">" . stripslashes($_GET['msg']) . "</div>"; } ?>
 		<?php /* BUILD LINK */ if(!$data['photos']) { echo "<b>No pictures found.</b><br />Make sure you have added your pictures to the 'photos' folder' and then click: <a href=\"?action=build\" onclick=\"this.innerHTML='Building Images... (this could take a few minutes)'\">Build Images</a>";  } ?>
 
 		<?php 
 			// PHOTO VIEW
-			if($_GET['view']) 
+			if(isset($_GET['view'])) 
 			{ 
 				$img_key = checkForImage($_GET['view']);
 				
@@ -119,7 +119,7 @@ if($_GET['download'] != "") { downloadImage(); }
 function getFileExt($filename) 
 {
 	$filename = strtolower($filename) ;
-	$exts = split("[/\\.]", $filename) ;
+	$exts = preg_split("[/\\.]", $filename) ;
 	$n = count($exts)-1;
 	$exts = $exts[$n];
 	return $exts; 
