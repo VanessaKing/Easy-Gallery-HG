@@ -1,4 +1,7 @@
-Easy-Gallery-HG
+Easy Gallery HG
 ===============
 
 Simple gallery script using an index.php file and a 'photos' folder of images.
+
+Example:
+http://halgatewood.com/free/gallery/gatewood/
