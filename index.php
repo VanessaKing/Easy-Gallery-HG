@@ -118,7 +118,11 @@ if(isset($_GET['download']) && $_GET['download'] != "") { downloadImage(); }
 
 function getFileExt($filename) 
 {
+<<<<<<< HEAD
 	return substr(strrchr($filename,'.'),1);
+=======
+	return substr(strrchr($filename,'.'),1); // from DAVID WALSH
+>>>>>>> File Ext
 }
 
 function buildImages()
@@ -215,6 +219,9 @@ function resizeImage($file, $folder, $new_width, $new_height)
 function checkForImage($img)
 {
 	$ext = getFileExt($img);
+	
+	echo $ext;
+	
 	if($ext != "jpg" AND $ext != "jpeg") { return false; }
 
 	global $data;
