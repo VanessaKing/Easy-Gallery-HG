@@ -118,11 +118,7 @@ if(isset($_GET['download']) && $_GET['download'] != "") { downloadImage(); }
 
 function getFileExt($filename) 
 {
-<<<<<<< HEAD
-	return substr(strrchr($filename,'.'),1);
-=======
 	return substr(strrchr($filename,'.'),1); // from DAVID WALSH
->>>>>>> File Ext
 }
 
 function buildImages()
