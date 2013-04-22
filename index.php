@@ -5,7 +5,11 @@
  */
 
 
+// META AND PAGE TITLE
 $title = "Easy Gallery HG";
+
+// MAIN COLOR
+$main_color = "#1c7fd7";
 
 // GET DATA/PHOTOS
 $data = (array) json_decode( @file_get_contents("photos.json"));
@@ -23,15 +27,15 @@ if(isset($_GET['download']) && $_GET['download'] != "") { downloadImage(); }
 	<title><?php echo $title; ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta name="viewport" content="width=device-width">
-	<link href='http://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+	<link href="https://fonts.googleapis.com/css?family=Oxygen" rel="stylesheet" type="text/css">
 	<style>
 		body { font-family: 'Oxygen', sans-serif; font-size: 12px; padding: 0; margin: 0; background: #f5f5f5; }
 		.wrap { width: 85%; margin: 2% auto; background: white; padding: 0 5% 2% 5%; }
-		.header { background: #ccc; padding: 15px 25px; margin-bottom: 25px; min-height: 30px; line-height: 30px; }
+		.header { background: <?php echo $main_color ?>; padding: 15px 25px; margin-bottom: 25px; min-height: 30px; line-height: 30px; }
 		.download { float: right; line-height: 30px; } .download a { color: #fff; text-decoration: underline; margin-left: 15px; }
-		h1 { margin: 0; font-size: 2em; font-weight:normal; color: #666; color: #fff; }
+		h1 { margin: 0; font-size: 2em; font-weight:normal; color: <?php echo $main_color ?>; color: #fff; }
 		h1 a { color: #fff; }
-		a { color: #399ae5; text-decoration: none; } a:hover { color: #206ba4; text-decoration: underline; }
+		a { color: <?php echo $main_color ?>; text-decoration: none; } a:hover { color: #206ba4; text-decoration: underline; }
 		#media_container { position: relative; padding: 0; }
 		#media_container ul { list-style: none; padding: 0; margin: 0; }
 		#media_container ul li { width: 175px; height: auto; padding: 0; margin: 0; }
@@ -64,10 +68,10 @@ if(isset($_GET['download']) && $_GET['download'] != "") { downloadImage(); }
 		.fancybox-title-outside-wrap { position: relative;margin-top: 10px;color: #fff; }.fancybox-title-inside-wrap { margin-top: 10px;} .fancybox-title-float-wrap .child a { padding: 0 5px; }
 		.fancybox-title-over-wrap {position: absolute;bottom: 0;left: 0;color: #fff;padding: 10px;background: #000;background: rgba(0, 0, 0, .8);}
 	</style>
-	<script src="http://code.jquery.com/jquery-1.7.2.min.js" type="text/javascript"></script>
-	<script src="http://dl.dropbox.com/u/6771946/jquery.wookmark.min.js" type="text/javascript"></script>
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/fancybox/2.0.6/jquery.fancybox.pack.js" type="text/javascript"></script>
-	<script type="text/javascript"> $(document).ready(function() { $(".fancybox").fancybox(); if($('#media_container')) { $('#media_container ul li').imagesLoaded(function() { $('#media_container ul li').wookmark({container: $("#media_container"), offset: 15, itemWidth: 175, autoResize: true }); }); } });</script>
+	<script src="//code.jquery.com/jquery-1.8.1.min.js" type="text/javascript"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/masonry/2.1.08/jquery.masonry.min.js" type="text/javascript"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.0.6/jquery.fancybox.pack.js" type="text/javascript"></script>
+	<script type="text/javascript"> $(document).ready(function() { $(".fancybox").fancybox(); if($('#media_container')) { $('#media_container ul li').imagesLoaded(function() { $('#media_container').masonry({  itemSelector: 'li', isAnimated: true, columnWidth: 175, gutterWidth: 5, isFitWidth: true }); });  }  }); </script>
 </head>
 <body>
 	<div class="wrap">
