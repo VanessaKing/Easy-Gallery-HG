@@ -4,6 +4,9 @@ $title = "Easy Gallery HG";
 // GET DATA/PHOTOS
 $data = (array) json_decode( @file_get_contents("photos.json"));
 
+// IMAGE FOLDER
+$photo_folder = "photos";
+
 // BUILD IMAGES
 if(isset($_GET['action']) && $_GET['action'] == "build") { buildImages(); }
 if(isset($_GET['download']) && $_GET['download'] != "") { downloadImage(); }
@@ -70,7 +73,7 @@ if(isset($_GET['download']) && $_GET['download'] != "") { downloadImage(); }
 		</div>
 		
 		<?php /*   MESSGAE  */ if(isset($_GET['msg']) && trim($_GET['msg']) != "") { echo "<div class=\"message\">" . stripslashes($_GET['msg']) . "</div>"; } ?>
-		<?php /* BUILD LINK */ if(!$data['photos']) { echo "<b>No pictures found.</b><br />Make sure you have added your pictures to the 'photos' folder' and then click: <a href=\"?action=build\" onclick=\"this.innerHTML='Building Images... (this could take a few minutes)'\">Build Images</a>";  } ?>
+		<?php /* BUILD LINK */ if(!$data['photos']) { echo "<b>No pictures found.</b><br />Make sure you have added your pictures to the '{$photo_folder}' folder' and then click: <a href=\"?action=build\" onclick=\"this.innerHTML='Building Images... (this could take a few minutes)'\">Build Images</a>";  } ?>
 
 		<?php 
 			// PHOTO VIEW
@@ -95,7 +98,7 @@ if(isset($_GET['download']) && $_GET['download'] != "") { downloadImage(); }
 					$prevnext .=  "</div>\n\n";
 					
 					echo $prevnext;
-					echo "<div class=\"image_single\"><img src=\"photos/_lrg/" . $_GET['view'] . "\"></div>";
+					echo "<div class=\"image_single\"><img src=\"{$photo_folder}/_lrg/" . $_GET['view'] . "\"></div>";
 					echo $prevnext;
 				}
 				
@@ -103,7 +106,7 @@ if(isset($_GET['download']) && $_GET['download'] != "") { downloadImage(); }
 
 		<div id="media_container">
 			<ul>
-				<?php foreach((array) $data['photos'] as $photo) { echo "<li><a href=\"photos/_lrg/$photo\" class=\"fancybox\" rel=\"group\" title=\"<a href='?view=$photo'>view</a> or <a href='?download=$photo'>download</a>\"><img src=\"photos/_sml/$photo\"></a></li>\n"; } ?>
+				<?php foreach((array) $data['photos'] as $photo) { echo "<li><a href=\"{$photo_folder}/_lrg/$photo\" class=\"fancybox\" rel=\"group\" title=\"<a href='?view=$photo'>view</a> or <a href='?download=$photo'>download</a>\"><img src=\"{$photo_folder}/_sml/$photo\"></a></li>\n"; } ?>
 			</ul>
 		</div>
 		
@@ -118,7 +121,7 @@ if(isset($_GET['download']) && $_GET['download'] != "") { downloadImage(); }
 
 function getFileExt($filename) 
 {
-	return substr(strrchr($filename,'.'),1); // from DAVID WALSH
+	return strtolower(substr(strrchr($filename,'.'),1)); // from DAVID WALSH
 }
 
 function buildImages()
@@ -137,12 +140,12 @@ function buildImages()
 	
 	set_time_limit(0);
 	// MAKE DIRECTORIES
-	if(!is_dir("photos/_sml")) { mkdir("photos/_sml"); }
-	if(!is_dir("photos/_lrg")) { mkdir("photos/_lrg"); }
-	if(!is_dir("photos/_sml")) { die("Cannot create directories on your file system. Place check your permissions"); }
+	if(!is_dir($photo_folder . "/_sml")) { mkdir($photo_folder . "/_sml"); }
+	if(!is_dir($photo_folder . "/_lrg")) { mkdir($photo_folder . "/_lrg"); }
+	if(!is_dir($photo_folder . "/_sml")) { die("Cannot create directories on your file system. Place check your permissions"); }
 
 	// RESIZE IMAGES
-	$handle=opendir(dirname(__FILE__) . "/photos");
+	$handle=opendir(dirname(__FILE__) . "/{$photo_folder}");
 	while (($file = readdir($handle))!==false) 
 	{ 
 		$ext = getFileExt($file);
@@ -150,35 +153,35 @@ function buildImages()
 		
 		if(!$rebuild_all)
 		{
-			if(file_exists("photos/_lrg/$file") && file_exists("photos/_sml/$file")) { continue; }  // ALREADY HAVE BOTH IMAGES
+			if(file_exists($photo_folder . "/_lrg/$file") && file_exists($photo_folder . "/_sml/$file")) { continue; }  // ALREADY HAVE BOTH IMAGES
 		}
 		
-		$sizes = getimagesize("photos/$file");
+		$sizes = getimagesize($photo_folder . "/$file");
 		$width = $sizes[0]; $height = $sizes[1];
 			
 		// LRG
 		if($width == $height) { $new_width = 900; $new_height = 900; }
 		else if($width > $height)  { $new_width = 900; $aspect_ratio = $width / $new_width; $new_height = abs($height/$aspect_ratio); }
 		else { $new_height = 700; $aspect_ratio = $height/$width; $new_width = abs($new_height/$aspect_ratio); }
-		resizeImage($file, "photos/_lrg", $new_width, $new_height);
+		resizeImage($file, $photo_folder . "/_lrg", $new_width, $new_height);
 			
 		// SML
 		if($width == $height) { $new_width = 175; $new_height = 175; }
 		else { $new_width = 175; $aspect_ratio = $width / $new_width; $new_height = abs($height/$aspect_ratio);}
-		resizeImage($file, "photos/_sml", $new_width, $new_height);
+		resizeImage($file, $photo_folder . "/_sml", $new_width, $new_height);
 	}
 	closedir($handle);
 	
 	// SAVE JSON FILE OF IMAGES
 	$files = array();
-	if(is_dir("photos/_lrg"))
+	if(is_dir($photo_folder . "/_lrg"))
 	{
-		$handle=opendir(dirname(__FILE__) . "/photos/_lrg");
+		$handle=opendir(dirname(__FILE__) . "/" . $photo_folder . "/_lrg");
 		while (($file = readdir($handle))!==false) 
 		{ 
 			$fileExt = getFileExt($file);
 			if(!in_array($fileExt, array('jpg','jpeg')) OR is_dir($file)) { continue; }
-			if(!file_exists("photos/_sml/$file")) { continue; }
+			if(!file_exists($photo_folder . "/_sml/$file")) { continue; }
 			$files[] = $file;
 		}
 		closedir($handle);	
@@ -201,7 +204,9 @@ function buildImages()
 
 function resizeImage($file, $folder, $new_width, $new_height)
 {
-	$img = "photos/$file";
+	global $photo_folder; 
+	
+	$img = $photo_folder . "/$file";
 	$destimg 	= ImageCreateTrueColor($new_width,$new_height);
 	$srcimg 	= ImageCreateFromJPEG($img);
 	$new_image	= dirname(__FILE__)."/" . $folder . "/" . $file;
@@ -216,8 +221,6 @@ function checkForImage($img)
 {
 	$ext = getFileExt($img);
 	
-	echo $ext;
-	
 	if($ext != "jpg" AND $ext != "jpeg") { return false; }
 
 	global $data;
@@ -226,10 +229,12 @@ function checkForImage($img)
 
 function downloadImage()
 {
+	global $photo_folder;
+	
 	$img = checkForImage($_GET['download']);
 	if($img === FALSE) { die("FILE COULD NOT BE DOWNLOADED"); }
 	
-	$download = "photos/" . $_GET['download'];
+	$download = $photo_folder . "/" . $_GET['download'];
 	
 	// Set headers
 	header("Cache-Control: public");
@@ -243,6 +248,6 @@ function downloadImage()
 	die;
 }
 
-if(!is_dir("photos")) { mkdir("photos"); }
+if( !is_dir( $photo_folder ) ) { mkdir( $photo_folder ); }
 
 ?>
