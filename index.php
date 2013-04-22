@@ -1,4 +1,10 @@
 <?php
+/*
+ * Build Images:
+ * ?action=build 
+ */
+
+
 $title = "Easy Gallery HG";
 
 // GET DATA/PHOTOS
@@ -126,7 +132,7 @@ function getFileExt($filename)
 
 function buildImages()
 {
-	global $data;
+	global $data, $photo_folder;
 	
 	// REBUILD ALL
 	$rebuild_all = false;
